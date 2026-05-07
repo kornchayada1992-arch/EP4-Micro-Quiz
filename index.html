@@ -9,11 +9,13 @@
 :root{
   --teal:#0d9e73;--teal-d:#0a7d5c;--teal-l:#e0f5ef;
   --blue:#2563eb;--blue-l:#eff6ff;
+  --pink:#e91e8c;--pink-d:#c4177a;--pink-l:#fce4f3;
+  --navy:#1a1f36;--navy2:#252b4a;
   --sal-h:#085041;--sal-b:#e0f5ef;--sal-bd:#9FE1CB;
   --sta-h:#7c2d12;--sta-b:#faece7;--sta-bd:#f5c4b3;
   --bac-h:#633806;--bac-b:#faeeda;--bac-bd:#fac775;
   --clo-h:#1e3a8a;--clo-b:#eff6ff;--clo-bd:#bfdbfe;
-  --bg:#f7f8fa;--white:#fff;--text:#1a1a2e;--sub:#64748b;
+  --bg:#f0f2f8;--white:#fff;--text:#1a1a2e;--sub:#64748b;
   --border:#e2e8f0;--shadow:0 2px 12px rgba(0,0,0,.07);
   --radius:12px;
 }
@@ -21,16 +23,16 @@
 body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6}
 
 /* TOP BAR */
-.topbar{background:var(--teal);color:#fff;padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:100}
-.topbar-brand{font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px}
-.topbar-brand span{opacity:.75;font-weight:400}
-.settings-btn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;padding:5px 12px;border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit;transition:background .2s}
-.settings-btn:hover{background:rgba(255,255,255,.25)}
+.topbar{background:var(--navy);color:#fff;padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:54px;position:sticky;top:0;z-index:100}
+.topbar-brand{font-size:15px;font-weight:700;letter-spacing:.5px}
+.topbar-brand span{opacity:.6;font-weight:400;font-size:13px;margin-left:6px}
+.settings-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;padding:5px 12px;border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit;transition:background .2s}
+.settings-btn:hover{background:rgba(255,255,255,.2)}
 
 /* SHEETS BANNER */
 .sheets-banner{background:#fff7ed;border-bottom:1px solid #fed7aa;padding:10px 1.5rem;display:flex;align-items:center;gap:10px;font-size:13px;color:#92400e}
 .sheets-banner.connected{background:#f0fdf4;border-color:#bbf7d0;color:#166534}
-.connect-link{margin-left:auto;background:var(--teal);color:#fff;border:none;padding:5px 14px;border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit;font-weight:500}
+.connect-link{margin-left:auto;background:var(--pink);color:#fff;border:none;padding:5px 14px;border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit;font-weight:500}
 
 /* SETTINGS */
 .settings-panel{display:none;background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin:1rem 1.5rem;box-shadow:var(--shadow)}
@@ -42,20 +44,20 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);fon
 .form-group{margin-bottom:12px}
 .form-group label{display:block;font-size:12px;font-weight:500;margin-bottom:4px;color:var(--sub)}
 .form-group input,.form-group textarea{width:100%;border:1px solid var(--border);border-radius:6px;padding:8px 10px;font-size:13px;font-family:inherit;outline:none}
-.form-group input:focus,.form-group textarea:focus{border-color:var(--teal)}
+.form-group input:focus,.form-group textarea:focus{border-color:var(--pink)}
 .btn-row{display:flex;gap:8px}
-.btn-save{background:var(--teal);color:#fff;border:none;padding:8px 20px;border-radius:6px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500}
+.btn-save{background:var(--pink);color:#fff;border:none;padding:8px 20px;border-radius:6px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500}
 .btn-cancel{background:transparent;border:1px solid var(--border);padding:8px 16px;border-radius:6px;font-size:13px;cursor:pointer;font-family:inherit;color:var(--sub)}
 
 /* LAYOUT */
 .container{max-width:860px;margin:0 auto;padding:1.5rem}
 
 /* TABS */
-.tab-nav{display:flex;background:#fff;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:1.5rem;box-shadow:var(--shadow)}
-.tab-btn{flex:1;padding:12px 8px;border:none;background:transparent;font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;color:var(--sub);transition:all .2s;border-right:1px solid var(--border);display:flex;align-items:center;justify-content:center;gap:5px}
+.tab-nav{display:flex;background:var(--navy);border-radius:var(--radius);overflow:hidden;margin-bottom:1.5rem;box-shadow:0 4px 16px rgba(26,31,54,.25)}
+.tab-btn{flex:1;padding:13px 8px;border:none;background:transparent;font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;color:rgba(255,255,255,.55);transition:all .2s;border-right:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;gap:5px}
 .tab-btn:last-child{border-right:none}
-.tab-btn.active{background:var(--teal);color:#fff}
-.tab-btn:not(.active):hover{background:var(--teal-l);color:var(--teal-d)}
+.tab-btn.active{background:var(--pink);color:#fff;font-weight:600}
+.tab-btn:not(.active):hover{background:rgba(255,255,255,.08);color:#fff}
 .tab-content{display:none}
 .tab-content.active{display:block}
 
@@ -193,17 +195,19 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);fon
 .btn-submit:disabled{background:var(--sub);cursor:not-allowed}
 
 /* RESULT */
-.result-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:2rem;text-align:center;box-shadow:var(--shadow);display:none}
+.result-card{background:var(--navy);border-radius:var(--radius);padding:2rem;text-align:center;box-shadow:0 8px 32px rgba(26,31,54,.3);display:none;color:#fff}
 .result-card.show{display:block}
-.r-score{font-size:52px;font-weight:700;color:var(--teal)}
-.r-pct{font-size:18px;color:var(--sub);margin-bottom:6px}
-.r-badge{display:inline-block;padding:4px 16px;border-radius:20px;font-size:13px;font-weight:600;margin-bottom:1.5rem}
-.pass{background:#d1fae5;color:#065f46}
-.fail{background:#fee2e2;color:#7f1d1d}
-.r-details{background:var(--bg);border-radius:8px;padding:12px;margin-bottom:1rem;font-size:12px;color:var(--sub);text-align:left;line-height:1.8}
-.btn-retry{background:#fff;border:1px solid var(--teal);color:var(--teal);padding:9px 24px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
-.btn-retry:hover{background:var(--teal-l)}
-.saving-msg{font-size:12px;color:var(--sub);margin-top:10px}
+.r-icon{font-size:64px;display:block;margin-bottom:8px}
+.r-score{font-size:72px;font-weight:800;color:var(--pink);line-height:1;margin-bottom:4px}
+.r-pct{font-size:16px;color:rgba(255,255,255,.7);margin-bottom:6px}
+.r-msg{font-size:17px;font-weight:600;color:#fff;margin-bottom:16px}
+.r-badge{display:inline-block;padding:6px 20px;border-radius:20px;font-size:13px;font-weight:600;margin-bottom:1.5rem}
+.pass{background:rgba(16,185,129,.2);color:#6ee7b7;border:1px solid rgba(16,185,129,.3)}
+.fail{background:rgba(239,68,68,.15);color:#fca5a5;border:1px solid rgba(239,68,68,.25)}
+.r-details{background:rgba(255,255,255,.08);border-radius:10px;padding:14px;margin-bottom:1.25rem;font-size:13px;color:rgba(255,255,255,.8);text-align:left;line-height:2}
+.btn-retry{background:var(--pink);color:#fff;border:none;padding:12px 32px;border-radius:25px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .2s}
+.btn-retry:hover{background:var(--pink-d)}
+.saving-msg{font-size:12px;color:rgba(255,255,255,.55);margin-top:10px}
 
 /* FOOTER */
 .footer{text-align:center;padding:2rem 1.5rem;font-size:11px;color:var(--sub);border-top:1px solid var(--border);margin-top:2rem}
@@ -213,8 +217,8 @@ body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);fon
 
 <!-- TOP BAR -->
 <div class="topbar">
-  <div class="topbar-brand">🔬 QA Sharing EP.4 <span>| สยาม โทเซลโล จำกัด</span></div>
-  <button class="settings-btn" onclick="toggleSettings()">⚙️ ตั้งค่า Google Sheets</button>
+  <div class="topbar-brand">SIAM TOHCELLO<span>QA Sharing EP.4</span></div>
+  <button class="settings-btn" onclick="toggleSettings()">⚙️ ตั้งค่า</button>
 </div>
 
 <!-- SHEETS BANNER -->
@@ -749,17 +753,17 @@ function doGet() {
       </div>
 
       <div id="questionsArea"></div>
-      <button class="btn-submit" id="submitBtn" onclick="submitQuiz()" disabled>✅ ส่งคำตอบ</button>
+      <button class="btn-submit" id="submitBtn" onclick="submitQuiz()" disabled>ส่งคำตอบ →</button>
     </div>
 
     <div class="result-card" id="resultCard">
-      <div style="font-size:13px;color:var(--sub);margin-bottom:4px">ผลการทดสอบ QA Sharing EP.4</div>
-      <div style="font-size:56px;margin:8px 0" id="resultIcon">—</div>
+      <span class="r-icon" id="resultIcon">🏆</span>
       <div class="r-score" id="resultScore">0</div>
       <div class="r-pct" id="resultPct">0 / 5 ข้อ · 0%</div>
+      <div class="r-msg" id="resultMsg"></div>
       <div class="r-badge" id="resultBadge">—</div>
       <div class="r-details" id="resultDetails"></div>
-      <button class="btn-retry" onclick="retryQuiz()">🔄 ทำแบบทดสอบอีกครั้ง</button>
+      <button class="btn-retry" onclick="retryQuiz()">🔄 ทำใหม่อีกครั้ง</button>
       <div class="saving-msg" id="savingMsg"></div>
     </div>
 
@@ -930,6 +934,7 @@ function submitQuiz() {
 
   document.getElementById('resultIcon').textContent=resultIcon;
   document.getElementById('resultScore').textContent=score;
+  document.getElementById('resultMsg').textContent=resultMsg;
   document.getElementById('resultPct').textContent=`${score} / ${total} ข้อ · ${pct}%`;
   const badge=document.getElementById('resultBadge');
   badge.textContent=pass?'✅ ผ่านการทดสอบ (100%)':'❌ ไม่ผ่าน — '+resultMsg;
@@ -972,7 +977,7 @@ function submitQuiz() {
       payload[`ans${i+1}check`] = correct;
     });
     fetch(sheetUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
-      .then(()=>{document.getElementById('savingMsg').textContent='✅ บันทึกผลลง Google Sheets แล้ว'})
+      .then(()=>{document.getElementById('savingMsg').innerHTML='<div class="r-save-ok">✅ บันทึกผลเรียบร้อยแล้ว</div>'})
       .catch(()=>{document.getElementById('savingMsg').textContent='⚠ บันทึกไม่สำเร็จ'});
   }
 }
