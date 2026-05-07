@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QA Sharing EP.4 — เชื้อ Micro 4 ชนิด | สยาม โทเซลโล</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
+:root{
+  --teal:#0d9e73;--teal-d:#0a7d5c;--teal-l:#e0f5ef;
+  --blue:#2563eb;--blue-l:#eff6ff;
+  --sal-h:#085041;--sal-b:#e0f5ef;--sal-bd:#9FE1CB;
+  --sta-h:#7c2d12;--sta-b:#faece7;--sta-bd:#f5c4b3;
+  --bac-h:#633806;--bac-b:#faeeda;--bac-bd:#fac775;
+  --clo-h:#1e3a8a;--clo-b:#eff6ff;--clo-bd:#bfdbfe;
+  --bg:#f7f8fa;--white:#fff;--text:#1a1a2e;--sub:#64748b;
+  --border:#e2e8f0;--shadow:0 2px 12px rgba(0,0,0,.07);
+  --radius:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Sarabun',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6}
+
+/* TOP BAR */
+.topbar{background:var(--teal);color:#fff;padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:100}
+.topbar-brand{font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px}
+.topbar-brand span{opacity:.75;font-weight:400}
+.settings-btn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;padding:5px 12px;border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit;transition:background .2s}
+.settings-btn:hover{background:rgba(255,255,255,.25)}
+
+/* SHEETS BANNER */
+.sheets-banner{background:#fff7ed;border-bottom:1px solid #fed7aa;padding:10px 1.5rem;display:flex;align-items:center;gap:10px;font-size:13px;color:#92400e}
+.sheets-banner.connected{background:#f0fdf4;border-color:#bbf7d0;color:#166534}
+.connect-link{margin-left:auto;background:var(--teal);color:#fff;border:none;padding:5px 14px;border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit;font-weight:500}
+
+/* SETTINGS */
+.settings-panel{display:none;background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin:1rem 1.5rem;box-shadow:var(--shadow)}
+.settings-panel.open{display:block}
+.settings-panel h3{font-size:15px;font-weight:600;margin-bottom:4px}
+.settings-panel p{font-size:12px;color:var(--sub);margin-bottom:1rem}
+.settings-steps{background:#f8fafc;border-radius:8px;padding:1rem;margin-bottom:1rem;font-size:12px;line-height:1.8}
+.settings-steps pre{background:#1e293b;color:#e2e8f0;padding:10px;border-radius:6px;font-size:10px;overflow-x:auto;white-space:pre-wrap;margin:8px 0}
+.form-group{margin-bottom:12px}
+.form-group label{display:block;font-size:12px;font-weight:500;margin-bottom:4px;color:var(--sub)}
+.form-group input,.form-group textarea{width:100%;border:1px solid var(--border);border-radius:6px;padding:8px 10px;font-size:13px;font-family:inherit;outline:none}
+.form-group input:focus,.form-group textarea:focus{border-color:var(--teal)}
+.btn-row{display:flex;gap:8px}
+.btn-save{background:var(--teal);color:#fff;border:none;padding:8px 20px;border-radius:6px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500}
+.btn-cancel{background:transparent;border:1px solid var(--border);padding:8px 16px;border-radius:6px;font-size:13px;cursor:pointer;font-family:inherit;color:var(--sub)}
+
+/* LAYOUT */
+.container{max-width:860px;margin:0 auto;padding:1.5rem}
+
+/* TABS */
+.tab-nav{display:flex;background:#fff;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:1.5rem;box-shadow:var(--shadow)}
+.tab-btn{flex:1;padding:12px 8px;border:none;background:transparent;font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;color:var(--sub);transition:all .2s;border-right:1px solid var(--border);display:flex;align-items:center;justify-content:center;gap:5px}
+.tab-btn:last-child{border-right:none}
+.tab-btn.active{background:var(--teal);color:#fff}
+.tab-btn:not(.active):hover{background:var(--teal-l);color:var(--teal-d)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#0d9e73,#0a7d5c);color:#fff;border-radius:14px;padding:1.5rem 2rem;margin-bottom:1.5rem;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.08)}
+.hero-ep{font-size:11px;font-weight:600;opacity:.8;letter-spacing:1px;margin-bottom:6px}
+.hero h1{font-size:20px;font-weight:700;margin-bottom:4px}
+.hero p{font-size:13px;opacity:.85}
+.hero-meta{display:flex;gap:1.5rem;margin-top:10px;font-size:12px;opacity:.8;flex-wrap:wrap}
+
+/* SECTION TITLE */
+.sec-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:1rem;display:flex;align-items:center;gap:8px}
+
+/* MICRO CARDS */
+.micro-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem}
+@media(max-width:600px){.micro-grid{grid-template-columns:1fr}}
+
+.mc{background:#fff;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.mc-head{padding:12px 16px;display:flex;align-items:center;gap:10px}
+.mc-icon{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.mc-name{font-size:14px;font-weight:700}
+.mc-sub{font-size:11px;opacity:.7}
+.mc-body{padding:0}
+
+/* 4-Section row in each card */
+.mc-sections{display:flex;flex-direction:column}
+.mc-sec{padding:10px 16px;border-top:1px solid var(--border)}
+.mc-sec-label{font-size:10px;font-weight:700;letter-spacing:.5px;margin-bottom:5px;display:flex;align-items:center;gap:5px;opacity:.75}
+.mc-sec-content{font-size:12px;color:var(--text);line-height:1.6}
+.tag-row{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.tag{display:inline-block;font-size:10px;font-weight:500;padding:2px 8px;border-radius:10px}
+.impact-row{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:4px}
+.impact-box{border-radius:7px;padding:6px 8px;font-size:11px;line-height:1.5}
+.prevent-row{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:4px}
+.prevent-box{border-radius:7px;padding:6px 8px;font-size:11px;line-height:1.5}
+
+/* Colors */
+.sal .mc-head{background:var(--sal-b)}.sal .mc-icon{background:var(--sal-bd)}.sal .mc-name{color:var(--sal-h)}
+.sta .mc-head{background:var(--sta-b)}.sta .mc-icon{background:var(--sta-bd)}.sta .mc-name{color:var(--sta-h)}
+.bac .mc-head{background:var(--bac-b)}.bac .mc-icon{background:var(--bac-bd)}.bac .mc-name{color:var(--bac-h)}
+.clo .mc-head{background:var(--clo-b)}.clo .mc-icon{background:var(--clo-bd)}.clo .mc-name{color:var(--clo-h)}
+
+/* Summary table */
+.sum-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);margin-bottom:1.5rem}
+.stbl{width:100%;border-collapse:collapse;font-size:12px}
+.stbl th{background:#f8fafc;padding:9px 12px;text-align:left;font-weight:600;color:var(--sub);border-bottom:1px solid var(--border)}
+.stbl td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5;color:var(--text)}
+.stbl tr:last-child td{border-bottom:none}
+.badge{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;white-space:nowrap}
+.b-sal{background:var(--sal-b);color:var(--sal-h)}
+.b-sta{background:var(--sta-b);color:var(--sta-h)}
+.b-bac{background:var(--bac-b);color:var(--bac-h)}
+.b-clo{background:var(--clo-b);color:var(--clo-h)}
+
+/* PREVENTION */
+.prev-hero{background:linear-gradient(135deg,#1a56a0,#2563eb);color:#fff;border-radius:14px;padding:1.5rem 2rem;margin-bottom:1.25rem}
+.prev-hero-ep{font-size:11px;font-weight:600;opacity:.8;letter-spacing:1px;margin-bottom:6px}
+.prev-hero h1{font-size:20px;font-weight:700;margin-bottom:4px}
+.prev-hero p{font-size:13px;opacity:.85}
+
+.block{background:#fff;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);margin-bottom:1rem}
+.block-head{padding:10px 18px;display:flex;align-items:center;gap:10px}
+.block-head-title{font-size:14px;font-weight:700;color:#fff}
+.block-head-sub{font-size:11px;color:rgba(255,255,255,.75)}
+.block-body{padding:1rem 1.25rem}
+.block-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.block-col{padding:1rem 1.25rem}
+.block-col+.block-col{border-left:1px solid var(--border)}
+
+.scenario-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.scenario{padding:1rem 1.25rem;border-top:1px solid var(--border)}
+.scenario+.scenario{border-left:1px solid var(--border)}
+.scenario-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 9px;border-radius:10px;margin-bottom:6px}
+.scenario-title{font-size:13px;font-weight:700;margin-bottom:6px}
+.scenario-icon{font-size:30px;text-align:center;margin:6px 0}
+.scenario-chip{border-radius:8px;padding:6px 10px;font-size:11px;text-align:center}
+
+.steps-bar{background:#f8fafc;padding:12px 1.25rem;border-top:1px solid var(--border)}
+.steps-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.step-box{border-radius:8px;padding:6px 4px;text-align:center}
+.step-emoji{font-size:17px}
+.step-label{font-size:9px;font-weight:600;margin-top:2px}
+
+.shoe-row{display:flex;align-items:center;justify-content:center;gap:14px;padding:12px;background:#f8fafc;border-radius:10px;margin-bottom:8px}
+.shoe-item{text-align:center}
+.shoe-item .emoji{font-size:26px}
+.shoe-item .lbl{font-size:10px;font-weight:600;margin-top:4px}
+.shoe-item .sub{font-size:9px;margin-top:1px}
+.arrow{font-size:18px;color:var(--sub)}
+
+.pill-list{display:flex;flex-direction:column;gap:5px;margin-top:6px}
+.pill{border-radius:8px;padding:7px 10px;display:flex;align-items:flex-start;gap:8px;font-size:11px;line-height:1.5}
+.pill-em{font-size:15px;flex-shrink:0;margin-top:1px}
+
+.company-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.company-card{border-radius:10px;padding:10px 12px}
+.company-card-title{font-size:11px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.company-card-items{display:flex;flex-direction:column;gap:4px}
+.company-item{font-size:11px;display:flex;align-items:flex-start;gap:6px;line-height:1.4}
+
+/* QUIZ */
+.quiz-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow);margin-bottom:1rem}
+.quiz-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.25rem}
+@media(max-width:600px){.quiz-form-grid{grid-template-columns:1fr}}
+.qi-group{display:flex;flex-direction:column;gap:4px}
+.qi-group label{font-size:12px;font-weight:600;color:var(--sub)}
+.qi-group input,.qi-group select{border:1px solid var(--border);border-radius:6px;padding:8px 10px;font-size:13px;font-family:inherit;outline:none;transition:border .2s}
+.qi-group input:focus,.qi-group select:focus{border-color:var(--teal)}
+
+.q-prog-wrap{display:flex;align-items:center;gap:10px;margin-bottom:1rem}
+.q-prog-txt{font-size:12px;color:var(--sub)}
+.q-prog-bg{flex:1;height:5px;background:var(--bg);border-radius:3px;overflow:hidden}
+.q-prog-fill{height:100%;background:var(--teal);border-radius:3px;transition:width .4s}
+.q-prog-pct{font-size:12px;font-weight:600;color:var(--teal);min-width:32px}
+
+.q-block{margin-bottom:1rem}
+.q-meta{font-size:11px;color:var(--sub);margin-bottom:5px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.q-diff{font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px}
+.q-text{font-size:14px;font-weight:500;color:var(--text);margin-bottom:10px;line-height:1.6}
+.q-opts{display:flex;flex-direction:column;gap:6px}
+.q-opt{border:1px solid var(--border);border-radius:8px;padding:9px 14px;font-size:13px;cursor:pointer;transition:all .15s;background:var(--bg);display:flex;align-items:flex-start;gap:8px;line-height:1.5}
+.q-opt:hover:not([data-done]){background:var(--teal-l);border-color:#9FE1CB}
+.q-opt.correct{background:#f0fdf4;border-color:#4ade80;color:#14532d}
+.q-opt.wrong{background:#fef2f2;border-color:#fca5a5;color:#7f1d1d}
+.q-opt.reveal{background:#f0fdf4;border-color:#4ade80;opacity:.7}
+.opt-letter{width:20px;height:20px;border-radius:50%;background:#fff;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;margin-top:1px}
+.q-fb{margin-top:8px;padding:8px 12px;border-radius:8px;font-size:12px;line-height:1.5;display:none}
+.q-fb.show{display:block}
+.q-fb.ok{background:#f0fdf4;color:#14532d;border:1px solid #bbf7d0}
+.q-fb.err{background:#fef2f2;color:#7f1d1d;border:1px solid #fecaca}
+
+.btn-submit{background:var(--teal);color:#fff;border:none;padding:10px 28px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;width:100%;margin-top:1rem;transition:background .2s}
+.btn-submit:hover{background:var(--teal-d)}
+.btn-submit:disabled{background:var(--sub);cursor:not-allowed}
+
+/* RESULT */
+.result-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:2rem;text-align:center;box-shadow:var(--shadow);display:none}
+.result-card.show{display:block}
+.r-score{font-size:52px;font-weight:700;color:var(--teal)}
+.r-pct{font-size:18px;color:var(--sub);margin-bottom:6px}
+.r-badge{display:inline-block;padding:4px 16px;border-radius:20px;font-size:13px;font-weight:600;margin-bottom:1.5rem}
+.pass{background:#d1fae5;color:#065f46}
+.fail{background:#fee2e2;color:#7f1d1d}
+.r-details{background:var(--bg);border-radius:8px;padding:12px;margin-bottom:1rem;font-size:12px;color:var(--sub);text-align:left;line-height:1.8}
+.btn-retry{background:#fff;border:1px solid var(--teal);color:var(--teal);padding:9px 24px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+.btn-retry:hover{background:var(--teal-l)}
+.saving-msg{font-size:12px;color:var(--sub);margin-top:10px}
+
+/* FOOTER */
+.footer{text-align:center;padding:2rem 1.5rem;font-size:11px;color:var(--sub);border-top:1px solid var(--border);margin-top:2rem}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-brand">🔬 QA Sharing EP.4 <span>| สยาม โทเซลโล จำกัด</span></div>
+  <button class="settings-btn" onclick="toggleSettings()">⚙️ ตั้งค่า Google Sheets</button>
+</div>
+
+<!-- SHEETS BANNER -->
+<div class="sheets-banner" id="sheetsBanner">
+  <span>🔗</span>
+  <span id="bannerText">ยังไม่ได้เชื่อมต่อ Google Sheets — ผลแบบทดสอบจะไม่ถูกบันทึก</span>
+  <button class="connect-link" onclick="toggleSettings()">เชื่อมต่อ</button>
+</div>
+
+<!-- SETTINGS PANEL -->
+<div class="settings-panel" id="settingsPanel">
+  <h3>🔗 ตั้งค่า Google Sheets</h3>
+  <p>ทำครั้งเดียว ผลทุกคนจะบันทึกอัตโนมัติ</p>
+  <div class="settings-steps">
+    <strong>📋 ขั้นตอน:</strong><br>
+    1. เปิด Google Sheets (ไฟล์เดิม EP.3) → Extensions → Apps Script<br>
+    2. สร้าง Script ใหม่ หรือเพิ่ม function ใหม่:<br>
+    <pre>function doPost(e) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sh = ss.getSheetByName("ผลทดสอบ EP4");
+  if (!sh) {
+    sh = ss.insertSheet("ผลทดสอบ EP4");
+    sh.appendRow([
+      "วันที่-เวลา","ชื่อ-นามสกุล","แผนก","รหัสพนักงาน",
+      "คะแนน","คะแนนเต็ม","%","pass100",
+      "ข้อ1","ข้อ1✓","ข้อ2","ข้อ2✓",
+      "ข้อ3","ข้อ3✓","ข้อ4","ข้อ4✓","ข้อ5","ข้อ5✓"
+    ]);
+    sh.getRange(1,1,1,18)
+      .setFontWeight("bold")
+      .setBackground("#0d9e73")
+      .setFontColor("white");
+  }
+  var d = JSON.parse(e.postData.contents);
+  sh.appendRow([
+    d.datetime, d.name, d.dept, d.empCode,
+    d.score, d.total, d.percent, d.pass,
+    d.ans1, d.ans1check, d.ans2, d.ans2check,
+    d.ans3, d.ans3check, d.ans4, d.ans4check,
+    d.ans5, d.ans5check
+  ]);
+  return ContentService
+    .createTextOutput("OK")
+    .setMimeType(ContentService.MimeType.TEXT);
+}
+function doGet() {
+  return ContentService
+    .createTextOutput("Connected!")
+    .setMimeType(ContentService.MimeType.TEXT);
+}</pre>
+    3. Deploy → New deployment → Web app<br>
+    &nbsp;&nbsp;&nbsp;— Execute as: <strong>Me</strong> | Access: <strong>Anyone</strong><br>
+    4. คัดลอก Web app URL วางด้านล่าง
+  </div>
+  <div class="form-group">
+    <label>🔗 Web App URL</label>
+    <input type="url" id="sheetUrl" placeholder="https://script.google.com/macros/s/..."/>
+  </div>
+  <div class="form-group">
+    <label>👥 รายชื่อแผนก (ใส่ทีละบรรทัด)</label>
+    <textarea id="deptList" rows="5">ฝ่ายผลิต
+ฝ่าย QA / QC
+ฝ่ายคลังสินค้า
+ฝ่ายวิศวกรรม
+ฝ่าย HR / ธุรการ
+ฝ่ายจัดซื้อ</textarea>
+  </div>
+  <div class="btn-row">
+    <button class="btn-cancel" onclick="toggleSettings()">ยกเลิก</button>
+    <button class="btn-save" onclick="saveSettings()">💾 บันทึก</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="switchTab('content',this)">🦠 เชื้อ Micro 4 ชนิด</button>
+    <button class="tab-btn" onclick="switchTab('prevent',this)">🛡️ มาตรการป้องกัน</button>
+    <button class="tab-btn" onclick="switchTab('quiz',this)">📝 แบบทดสอบ</button>
+  </div>
+
+  <!-- ===================== TAB: CONTENT ===================== -->
+  <div class="tab-content active" id="tab-content">
+
+    <div class="hero">
+      <div class="hero-ep">QA SHARING EP.4 — FOOD SAFETY</div>
+      <h1>เชื้อจุลินทรีย์ 4 ชนิด บนบรรจุภัณฑ์อาหาร</h1>
+      <p>ตามประกาศ อย. คำชี้แจงประกาศกระทรวงสาธารณสุข (ฉบับที่ 435) พ.ศ. 2565</p>
+      <div class="hero-meta">
+        <span>📄 FSSC 22000 / ISO/TS 22002-4</span>
+        <span>🏭 สยาม โทเซลโล จำกัด</span>
+      </div>
+    </div>
+
+    <div class="micro-grid">
+
+      <!-- ===== SALMONELLA ===== -->
+      <div class="mc sal">
+        <div class="mc-head">
+          <div class="mc-icon">🧫</div>
+          <div>
+            <div class="mc-name">Salmonella spp.</div>
+            <div class="mc-sub" style="color:var(--sal-h)">ซาลโมเนลลา · Gram(-) · ไม่มีสปอร์</div>
+          </div>
+        </div>
+        <div class="mc-sections">
+
+          <!-- แหล่งที่มา -->
+          <div class="mc-sec">
+            <div class="mc-sec-label" style="color:var(--sal-h)">📍 แหล่งที่มา</div>
+            <div class="tag-row">
+              <span class="tag" style="background:var(--sal-b);color:var(--sal-h)">🐔 สัตว์ปีก</span>
+              <span class="tag" style="background:var(--sal-b);color:var(--sal-h)">🥚 ไข่</span>
+              <span class="tag" style="background:var(--sal-b);color:var(--sal-h)">🥩 เนื้อดิบ</span>
+              <span class="tag" style="background:var(--sal-b);color:var(--sal-h)">💧 น้ำปนเปื้อน</span>
+              <span class="tag" style="background:var(--sal-b);color:var(--sal-h)">🌱 ดินและสิ่งแวดล้อม</span>
+            </div>
+          </div>
+
+          <!-- ผลกระทบ -->
+          <div class="mc-sec">
+            <div class="mc-sec-label" style="color:var(--sal-h)">⚠️ ผลกระทบ</div>
+            <div class="impact-row">
+              <div class="impact-box" style="background:#fff0f0;border:1px solid #fca5a5">
+                <div style="font-size:11px;font-weight:700;color:#7f1d1d;margin-bottom:3px">👤 ต่อคน</div>
+                <div style="font-size:11px;color:#7f1d1d;line-height:1.5">ท้องร่วง ไข้ อาเจียน<br>ระยะฟักตัว 6–72 ชม.</div>
+              </div>
+              <div class="impact-box" style="background:#fef9ec;border:1px solid #fcd34d">
+                <div style="font-size:11px;font-weight:700;color:#713f12;margin-bottom:3px">📦 ต่อผลิตภัณฑ์</div>
+                <div style="font-size:11px;color:#713f12;line-height:1.5">ไม่ผ่านมาตรฐาน อย.<br>เรียกคืนสินค้า / ปฏิเสธ</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- มาตรการ -->
+          <div class="mc-sec">
+            <div class="mc-sec-label" style="color:var(--sal-h)">🛡️ มาตรการป้องกัน</div>
+            <div class="prevent-row">
+              <div class="prevent-box" style="background:var(--sal-b);border:1px solid var(--sal-bd)">
+                <div style="font-size:10px;font-weight:700;color:var(--sal-h);margin-bottom:3px">👤 พนักงาน</div>
+                <div style="font-size:11px;color:var(--sal-h);line-height:1.5">ล้างมือ 2 ก่อน 2 หลัง<br>สวมถุงมือ + PPE ครบ</div>
+              </div>
+              <div class="prevent-box" style="background:#f0fdf4;border:1px solid #86efac">
+                <div style="font-size:10px;font-weight:700;color:#14532d;margin-bottom:3px">🏭 บริษัท</div>
+                <div style="font-size:11px;color:#14532d;line-height:1.5">Swab Test พื้นผิว<br>ส่ง Lab ภายนอก</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ===== S. AUREUS ===== -->
+      <div class="mc sta">
+        <div class="mc-head">
+          <div class="mc-icon">🧫</div>
+          <div>
+            <div class="mc-name">Staphylococcus aureus</div>
+            <div class="mc-sub" style="color:var(--sta-h)">สแตฟิโลค็อกคัส · Gram(+) · Toxin ทนความร้อน</div>
+          </div>
+        </div>
+        <div class="mc-sections">
+
+          <div class="mc-sec">
+            <div class="mc-sec-label" style="color:var(--sta-h)">📍 แหล่งที่มา</div>
+            <div class="tag-row">
+              <span class="tag" style="background:var(--sta-b);color:var(--sta-h)">🖐️ มือพนักงาน</span>
+              <span class="tag" style="background:var(--sta-b);color:var(--sta-h)">👃 จมูก / คอ</span>
+              <span class="tag" style="background:var(--sta-b);color:var(--sta-h)">🩹 บาดแผล / หนอง</span>
+              <span class="tag" style="background:var(--sta-b);color:var(--sta-h)">💇 เส้นผม</span>
+            </div>
+          </div>
+
+          <div class="mc-sec">
+            <div class="mc-sec-label" style="color:var(--sta-h)">⚠️ ผลกระทบ</div>
+            <div class="impact-row">
+              <div class="impact-box" style="background:#fff0f0;border:1px solid #fca5a5">
+                <div style="font-size:11px;font-weight:700;color:#7f1d1d;margin-bottom:3px">👤 ต่อคน</div>
+                <div style="font-size:11px;color:#7f1d1d;line-height:1.5">คลื่นไส้ อาเจียนรุนแรง<br>ระยะฟักตัว 1–6 ชม.</div>
+              </div>
+              <div class="impact-box" style="background:#fef9ec;border:1px solid #fcd34d">
+                <div style="font-size:11px;font-weight:700;color:#713f12;margin-bottom:3px">📦 ต่อผลิตภัณฑ์</div>
+                <div style="font-size:11px;color:#713f12;line-height:1.5">Toxin ทนความร้อน<br>กำจัดยากหลังปนเปื้อน</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mc-sec">
+            <div class="mc-sec-label" style="color:var(--sta-h)">🛡️ มาตรการป้องกัน</div>
+            <div class="prevent-row">
+              <div class="prevent-box" style="background:var(--sta-b);border:1px solid var(--sta-bd)">
+                <div style="font-size:10px;font-weight:700;color:var(--sta-h);margin-bottom:3px">👤 พนักงาน</div>
+                <div style="font-size:11px;color:var(--sta-h);line-height:1.5">ล้างมือ 2 ก่อน 2 หลัง<br>แจ้งหัวหน้าเมื่อมีบาดแผล ไข้ ไอ จาม</div>
+              </div>
+              <div class="prevent-box" style="background:#f0fdf4;border:1px solid #86efac">
+                <div style="font-size:10px;font-weight:700;color:#14532d;margin-bottom:3px">🏭 บริษัท</div>
+                <div style="font-size:11px;color:#14532d;line-height:1.5">Swab Test มือพนักงาน<br>ส่ง Lab ภายนอก</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ===== BACILLUS ===== -->
+      <div class="mc bac">
+        <div class="mc-head">
+          <div class="mc-icon">🧫</div>
+          <div>
+            <div class="mc-name">Bacillus cereus</div>
+            <div class="mc-sub" style="color:var(--bac-h)">บาซิลลัส · Gram(+) · สร้างสปอร์ทนความร้อน</div>
+          </div>
+        </div>
+        <div class="mc-sections">
+
+          <div class="mc-sec">
+            <div class="mc-sec-label" style="color:var(--bac-h)">📍 แหล่งที่มา</div>
+            <div class="tag-row">
+              <span class="tag" style="background:var(--bac-b);color:var(--bac-h)">🌱 ดิน / ฝุ่น</span>
+              <span class="tag" style="background:var(--bac-b);color:var(--bac-h)">🌾 ธัญพืช / แป้ง</span>
+              <span class="tag" style="background:var(--bac-b);color:var(--bac-h)">💨 อากาศในโรงงาน</span>
+              <span class="tag" style="background:var(--bac-b);color:var(--bac-h)">📦 บรรจุภัณฑ์วัตถุดิบ</span>
+            </div>
+          </div>
+
+          <div class="mc-sec">
+            <div class="mc-sec-label" style="color:var(--bac-h)">⚠️ ผลกระทบ</div>
+            <div class="impact-row">
+              <div class="impact-box" style="background:#fff0f0;border:1px solid #fca5a5">
+                <div style="font-size:11px;font-weight:700;color:#7f1d1d;margin-bottom:3px">👤 ต่อคน</div>
+                <div style="font-size:11px;color:#7f1d1d;line-height:1.5">อาเจียน (0.5–6 ชม.)<br>หรือท้องร่วง (6–15 ชม.)</div>
+              </div>
+              <div class="impact-box" style="background:#fef9ec;border:1px solid #fcd34d">
+                <div style="font-size:11px;font-weight:700;color:#713f12;margin-bottom:3px">📦 ต่อผลิตภัณฑ์</div>
+                <div style="font-size:11px;color:#713f12;line-height:1.5">สปอร์ทนความร้อนสูง<br>ปนเปื้อนซ่อนตัวยาก</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mc-sec">
+            <div class="mc-sec-label" style="color:var(--bac-h)">🛡️ มาตรการป้องกัน</div>
+            <div class="prevent-row">
+              <div class="prevent-box" style="background:var(--bac-b);border:1px solid var(--bac-bd)">
+                <div style="font-size:10px;font-weight:700;color:var(--bac-h);margin-bottom:3px">👤 พนักงาน</div>
+                <div style="font-size:11px;color:var(--bac-h);line-height:1.5">เปลี่ยนรองเท้าก่อนเข้าพื้นที่ผลิต<br>ไม่นำฝุ่น/ดินเข้าโรงงาน</div>
+              </div>
+              <div class="prevent-box" style="background:#f0fdf4;border:1px solid #86efac">
+                <div style="font-size:10px;font-weight:700;color:#14532d;margin-bottom:3px">🏭 บริษัท</div>
+                <div style="font-size:11px;color:#14532d;line-height:1.5">Swab Test พื้นผิว<br>ส่ง Lab ภายนอก</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ===== CLOSTRIDIUM ===== -->
+      <div class="mc clo">
+        <div class="mc-head">
+          <div class="mc-icon">🧫</div>
+          <div>
+            <div class="mc-name">Clostridium perfringens</div>
+            <div class="mc-sub" style="color:var(--clo-h)">คลอสทริเดียม · Gram(+) · Anaerobe · สร้างสปอร์</div>
+          </div>
+        </div>
+        <div class="mc-sections">
+
+          <div class="mc-sec">
+            <div class="mc-sec-label" style="color:var(--clo-h)">📍 แหล่งที่มา</div>
+            <div class="tag-row">
+              <span class="tag" style="background:var(--clo-b);color:var(--clo-h)">🌱 ดิน / น้ำเสีย</span>
+              <span class="tag" style="background:var(--clo-b);color:var(--clo-h)">🚽 ลำไส้คนและสัตว์</span>
+              <span class="tag" style="background:var(--clo-b);color:var(--clo-h)">👟 รองเท้าจากภายนอก</span>
+              <span class="tag" style="background:var(--clo-b);color:var(--clo-h)">♻️ ปุ๋ยคอก</span>
+            </div>
+          </div>
+
+          <div class="mc-sec">
+            <div class="mc-sec-label" style="color:var(--clo-h)">⚠️ ผลกระทบ</div>
+            <div class="impact-row">
+              <div class="impact-box" style="background:#fff0f0;border:1px solid #fca5a5">
+                <div style="font-size:11px;font-weight:700;color:#7f1d1d;margin-bottom:3px">👤 ต่อคน</div>
+                <div style="font-size:11px;color:#7f1d1d;line-height:1.5">ปวดท้องเกร็ง ท้องร่วง<br>ระยะฟักตัว 6–24 ชม.</div>
+              </div>
+              <div class="impact-box" style="background:#fef9ec;border:1px solid #fcd34d">
+                <div style="font-size:11px;font-weight:700;color:#713f12;margin-bottom:3px">📦 ต่อผลิตภัณฑ์</div>
+                <div style="font-size:11px;color:#713f12;line-height:1.5">เจริญในสภาวะไม่มี O₂<br>ปนเปื้อนจากดิน/พื้น</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mc-sec">
+            <div class="mc-sec-label" style="color:var(--clo-h)">🛡️ มาตรการป้องกัน</div>
+            <div class="prevent-row">
+              <div class="prevent-box" style="background:var(--clo-b);border:1px solid var(--clo-bd)">
+                <div style="font-size:10px;font-weight:700;color:var(--clo-h);margin-bottom:3px">👤 พนักงาน</div>
+                <div style="font-size:11px;color:var(--clo-h);line-height:1.5">เปลี่ยนรองเท้าก่อนเข้าพื้นที่ผลิต<br>ล้างมือ 2 ก่อน 2 หลัง</div>
+              </div>
+              <div class="prevent-box" style="background:#f0fdf4;border:1px solid #86efac">
+                <div style="font-size:10px;font-weight:700;color:#14532d;margin-bottom:3px">🏭 บริษัท</div>
+                <div style="font-size:11px;color:#14532d;line-height:1.5">Swab Test พื้นผิว<br>ส่ง Lab ภายนอก</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary table -->
+    <div class="sec-title">📊 ตารางสรุปเปรียบเทียบ</div>
+    <div class="sum-card">
+      <table class="stbl">
+        <thead>
+          <tr>
+            <th>เชื้อ</th>
+            <th>แหล่งที่มาหลัก</th>
+            <th>อาการ (ระยะฟักตัว)</th>
+            <th>จุดเสี่ยงในโรงงาน</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="badge b-sal">Salmonella</span></td>
+            <td>สัตว์ปีก ไข่ เนื้อดิบ ดิน</td>
+            <td>ท้องร่วง ไข้ (6–72 ชม.)</td>
+            <td>มือพนักงาน / สิ่งแวดล้อม</td>
+          </tr>
+          <tr>
+            <td><span class="badge b-sta">S. aureus</span></td>
+            <td>มือ จมูก ผิวหนัง บาดแผล</td>
+            <td>อาเจียนรุนแรง (1–6 ชม.)</td>
+            <td>พนักงานสัมผัสผลิตภัณฑ์โดยตรง</td>
+          </tr>
+          <tr>
+            <td><span class="badge b-bac">B. cereus</span></td>
+            <td>ดิน ฝุ่น ธัญพืช อากาศ</td>
+            <td>อาเจียน/ท้องร่วง (0.5–15 ชม.)</td>
+            <td>ฝุ่นและวัตถุดิบปนเปื้อน</td>
+          </tr>
+          <tr>
+            <td><span class="badge b-clo">C. perfringens</span></td>
+            <td>ดิน น้ำเสีย ลำไส้ รองเท้า</td>
+            <td>ปวดท้อง ท้องร่วง (6–24 ชม.)</td>
+            <td>รองเท้านำเชื้อจากภายนอก</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px 16px;font-size:12px;color:#166534;margin-bottom:1rem">
+      📋 <strong>อ้างอิง:</strong> ประกาศ อย. คำชี้แจงประกาศกระทรวงสาธารณสุข (ฉบับที่ 435) · FSSC 22000 v6 · ISO/TS 22002-4 Food Packaging
+    </div>
+
+  </div><!-- end tab-content -->
+
+  <!-- ===================== TAB: PREVENTION ===================== -->
+  <div class="tab-content" id="tab-prevent">
+
+    <!-- 2 ก่อน 2 หลัง -->
+    <div class="block" style="margin-top:0">
+      <div class="block-head" style="background:linear-gradient(90deg,#1a56a0,#2563eb)">
+        <span style="font-size:24px">🧴</span>
+        <div>
+          <div class="block-head-title">2 ก่อน &amp; 2 หลัง — ล้างมือทุกครั้ง</div>
+          <div class="block-head-sub">"มือสะอาดคือด่านแรกในการปกป้องผู้บริโภค"</div>
+        </div>
+      </div>
+      <div class="scenario-grid">
+        <div class="scenario">
+          <div class="scenario-badge" style="background:#dbeafe;color:#1e40af">⏩ ก่อน 1</div>
+          <div class="scenario-title" style="color:#1e3a8a">เข้าพื้นที่การผลิต</div>
+          <div class="scenario-icon">🏭</div>
+        </div>
+        <div class="scenario">
+          <div class="scenario-badge" style="background:#dbeafe;color:#1e40af">⏩ ก่อน 2</div>
+          <div class="scenario-title" style="color:#1e3a8a">รับประทานอาหาร</div>
+          <div class="scenario-icon">🍽️</div>
+        </div>
+        <div class="scenario" style="border-top:1px solid var(--border)">
+          <div class="scenario-badge" style="background:#e0e7ff;color:#3730a3">⏪ หลัง 1</div>
+          <div class="scenario-title" style="color:#312e81">เข้าห้องน้ำ</div>
+          <div class="scenario-icon">🚻</div>
+        </div>
+        <div class="scenario" style="border-top:1px solid var(--border)">
+          <div class="scenario-badge" style="background:#e0e7ff;color:#3730a3">⏪ หลัง 2</div>
+          <div class="scenario-title" style="color:#312e81">สัมผัสสิ่งสกปรก</div>
+          <div class="scenario-icon">🗑️</div>
+        </div>
+      </div>
+
+      <!-- 3-phase handwash -->
+      <div class="steps-bar">
+        <div style="font-size:11px;font-weight:700;color:#1e3a8a;margin-bottom:10px;text-align:center">ขั้นตอนการล้างมือที่ถูกวิธี</div>
+        <div style="display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:8px;align-items:stretch">
+
+          <div style="background:#e0f5ef;border-radius:10px;padding:12px 8px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+            <div style="font-size:11px;font-weight:700;color:#065f46">① สบู่เหลวล้างมือ</div>
+            <div style="font-size:32px">🧼</div>
+            <div style="background:#0d9e73;border-radius:6px;padding:5px 10px;font-size:11px;color:#fff;font-weight:700">7 ขั้นตอน · ≥ 30 วินาที</div>
+          </div>
+
+          <div style="display:flex;align-items:center;justify-content:center;font-size:22px;color:var(--sub)">→</div>
+
+          <div style="background:#fef9ec;border:1px solid #fcd34d;border-radius:10px;padding:12px 8px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+            <div style="font-size:11px;font-weight:700;color:#713f12">② เช็ดมือให้แห้ง</div>
+            <div style="font-size:32px">🧻</div>
+            <div style="font-size:11px;color:#713f12;line-height:1.5">กระดาษทิชชู<br>หรือผ้าสะอาด</div>
+          </div>
+
+          <div style="display:flex;align-items:center;justify-content:center;font-size:22px;color:var(--sub)">→</div>
+
+          <div style="background:#dbeafe;border-radius:10px;padding:12px 8px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+            <div style="font-size:11px;font-weight:700;color:#1e40af">③ เจลแอลกอฮอล์</div>
+            <div style="font-size:32px">🧴</div>
+            <div style="font-size:11px;color:#1e3a8a;line-height:1.5">ทาให้ทั่วมือ<br>จนแห้งสนิท</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- เปลี่ยนรองเท้า -->
+    <div class="block">
+      <div class="block-head" style="background:linear-gradient(90deg,#065f46,#0d9e73)">
+        <span style="font-size:24px">👞</span>
+        <div>
+          <div class="block-head-title">การสวมรองเท้าตามกำหนด</div>
+          <div class="block-head-sub">ป้องกันเชื้อ B. cereus และ C. perfringens จากดินและสิ่งแวดล้อม</div>
+        </div>
+      </div>
+      <div class="block-grid">
+
+        <!-- เข้าพื้นที่ผลิต -->
+        <div class="block-col">
+          <div style="font-size:12px;font-weight:700;color:#065f46;margin-bottom:8px">🏭 เข้าพื้นที่การผลิต</div>
+          <div class="shoe-row">
+            <div class="shoe-item"><div class="emoji">👟</div><div class="lbl" style="color:#dc2626">รองเท้าใช้งาน</div><div class="sub" style="color:#dc2626">ภายนอกโรงงาน</div></div>
+            <div class="arrow">→</div>
+            <div class="shoe-item"><div class="emoji">🥿</div><div class="lbl" style="color:#0d9e73">รองเท้าใช้งาน</div><div class="sub" style="color:#0d9e73">ภายในโรงงาน</div></div>
+          </div>
+          <div style="background:#fef2f2;border-radius:8px;padding:7px 10px;font-size:11px;color:#7f1d1d;display:flex;gap:6px">
+            <span>🚫</span><span>ห้ามนำรองเท้าใช้งานภายในโรงงานออกนอกบริเวณโรงงาน</span>
+          </div>
+        </div>
+
+        <!-- เข้าห้องน้ำ -->
+        <div class="block-col">
+          <div style="font-size:12px;font-weight:700;color:#1e3a8a;margin-bottom:8px">🚻 เข้าห้องน้ำ</div>
+          <div class="shoe-row">
+            <div class="shoe-item"><div class="emoji">🥿</div><div class="lbl" style="color:#0d9e73">รองเท้าใช้งาน</div><div class="sub" style="color:#0d9e73">ภายในโรงงาน</div></div>
+            <div class="arrow">→</div>
+            <div class="shoe-item"><div class="emoji">🩴</div><div class="lbl" style="color:#1e3a8a">รองเท้าสำหรับ</div><div class="sub" style="color:#1e3a8a">ห้องน้ำ</div></div>
+          </div>
+          <div style="background:#eff6ff;border-radius:8px;padding:7px 10px;font-size:11px;color:#1e3a8a;display:flex;gap:6px">
+            <span>🔄</span><span>ออกจากห้องน้ำ → เปลี่ยนกลับเป็นรองเท้าใช้งานภายในโรงงาน</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- มาตรการฝั่งบริษัท -->
+    <div class="block">
+      <div class="block-head" style="background:linear-gradient(90deg,#4c1d95,#7c3aed)">
+        <span style="font-size:24px">🏭</span>
+        <div>
+          <div class="block-head-title">มาตรการของบริษัท</div>
+          <div class="block-head-sub">ตรวจสอบและติดตามเชื้อตามแผน FSSC 22000</div>
+        </div>
+      </div>
+      <div class="block-body">
+        <div class="company-grid">
+          <div class="company-card" style="background:#f5f3ff;border:1px solid #c4b5fd">
+            <div class="company-card-title" style="color:#4c1d95">🧫 Swab Test (EMP)</div>
+            <div class="company-card-items">
+              <div class="company-item" style="color:#4c1d95"><span>•</span><span>ตรวจพื้นผิวสัมผัสอาหารตามความถี่ที่กำหนด</span></div>
+              <div class="company-item" style="color:#4c1d95"><span>•</span><span>ตรวจมือพนักงานและอุปกรณ์การผลิต</span></div>
+              <div class="company-item" style="color:#4c1d95"><span>•</span><span>บันทึก Trend และแจ้ง QA เมื่อพบความผิดปกติ</span></div>
+            </div>
+          </div>
+          <div class="company-card" style="background:#ecfdf5;border:1px solid #6ee7b7">
+            <div class="company-card-title" style="color:#065f46">🔬 ส่ง Lab ภายนอก</div>
+            <div class="company-card-items">
+              <div class="company-item" style="color:#065f46"><span>•</span><span>ส่งตัวอย่างบรรจุภัณฑ์ตรวจ 4 เชื้อตามแผน</span></div>
+              <div class="company-item" style="color:#065f46"><span>•</span><span>Salmonella / S. aureus / B. cereus / C. perfringens</span></div>
+              <div class="company-item" style="color:#065f46"><span>•</span><span>มีแผน Corrective Action หากไม่ผ่านเกณฑ์</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Callout -->
+    <div style="background:#fff;border:2px solid #2563eb;border-radius:12px;padding:1rem 1.25rem;display:flex;align-items:center;gap:14px;margin-bottom:1rem">
+      <div style="font-size:36px;flex-shrink:0">🎯</div>
+      <div>
+        <div style="font-size:14px;font-weight:700;color:#1e3a8a;margin-bottom:2px">2 ก่อน &amp; 2 หลัง + เปลี่ยนรองเท้า — ทำทุกครั้ง ไม่มีข้อยกเว้น</div>
+        <div style="font-size:12px;color:var(--sub)">พนักงานทุกคนมีหน้าที่ร่วมกันปกป้องผู้บริโภคปลายทาง</div>
+      </div>
+    </div>
+
+  </div><!-- end tab-prevent -->
+
+  <!-- ===================== TAB: QUIZ ===================== -->
+  <div class="tab-content" id="tab-quiz">
+
+    <div class="quiz-card" id="quizFormCard">
+      <div class="sec-title">📝 แบบทดสอบความเข้าใจ</div>
+      <p style="font-size:13px;color:var(--sub);margin-bottom:1rem">เชื้อ Micro 4 ชนิด &amp; มาตรการป้องกัน · <strong>5 ข้อ</strong> · ตอบให้ครบแล้วกดส่งเพื่อดูเฉลย</p>
+
+      <div class="quiz-form-grid">
+        <div class="qi-group" style="grid-column:1/-1">
+          <label>ชื่อ - นามสกุล *</label>
+          <input type="text" id="inputName" placeholder="กรอกชื่อ-นามสกุลจริง"/>
+        </div>
+        <div class="qi-group">
+          <label>แผนก *</label>
+          <select id="inputDept"><option value="">-- เลือกแผนก --</option></select>
+        </div>
+        <div class="qi-group">
+          <label>รหัสพนักงาน *</label>
+          <input type="text" id="inputEmp" placeholder="รหัสพนักงาน"/>
+        </div>
+      </div>
+
+      <div class="q-prog-wrap">
+        <span class="q-prog-txt" id="progText">ตอบแล้ว 0 / 5 ข้อ</span>
+        <div class="q-prog-bg"><div class="q-prog-fill" id="progFill" style="width:0%"></div></div>
+        <span class="q-prog-pct" id="progPct">0%</span>
+      </div>
+
+      <div id="questionsArea"></div>
+      <button class="btn-submit" id="submitBtn" onclick="submitQuiz()" disabled>✅ ส่งคำตอบ</button>
+    </div>
+
+    <div class="result-card" id="resultCard">
+      <div style="font-size:13px;color:var(--sub);margin-bottom:4px">ผลการทดสอบ QA Sharing EP.4</div>
+      <div class="r-score" id="resultScore">0</div>
+      <div class="r-pct" id="resultPct">0 / 5 ข้อ · 0%</div>
+      <div class="r-badge" id="resultBadge">—</div>
+      <div class="r-details" id="resultDetails"></div>
+      <button class="btn-retry" onclick="retryQuiz()">🔄 ทำแบบทดสอบอีกครั้ง</button>
+      <div class="saving-msg" id="savingMsg"></div>
+    </div>
+
+  </div><!-- end tab-quiz -->
+
+</div><!-- end container -->
+
+<div class="footer">
+  QA Sharing EP.4 — เชื้อ Micro 4 ชนิด | บริษัท สยาม โทเซลโล จำกัด<br>
+  อ้างอิง: ประกาศ อย. ฉบับที่ 435 (2565) · FSSC 22000 v6 · ISO/TS 22002-4
+</div>
+
+<script>
+// ===== CONFIG =====
+let sheetUrl = localStorage.getItem('ep4_sheetUrl')||'';
+let depts = (localStorage.getItem('ep4_depts')||'ฝ่ายผลิต\nฝ่าย QA / QC\nฝ่ายคลังสินค้า\nฝ่ายวิศวกรรม\nฝ่าย HR / ธุรการ\nฝ่ายจัดซื้อ').split('\n');
+
+// ===== QUESTIONS (5 ข้อ — เฉลยหลังกดส่ง) =====
+const Q = [
+  {
+    tag:'S. aureus', tc:'b-sta',
+    q:'เชื้อ Staphylococcus aureus มีแหล่งที่มาหลักจากที่ใดในสายการผลิต?',
+    opts:['ดิน น้ำเสีย และรองเท้าพนักงาน','มือ จมูก ผิวหนัง และบาดแผลของพนักงาน','ธัญพืช แป้ง และฝุ่นละอองในโรงงาน','น้ำปนเปื้อนและสัตว์พาหะ'],
+    ans:1, ex:'S. aureus พบตามธรรมชาติบนร่างกายมนุษย์ โดยเฉพาะมือ จมูก ผิวหนัง และบาดแผล จึงต้องล้างมือทุกครั้งและแจ้งหัวหน้าเมื่อมีบาดแผล'
+  },
+  {
+    tag:'C. perfringens', tc:'b-clo',
+    q:'เชื้อ Clostridium perfringens มีความเสี่ยงเข้าโรงงานผ่านทางใดเป็นหลัก?',
+    opts:['อากาศและฝุ่นละอองในบรรยากาศ','มือและผิวหนังของพนักงาน','รองเท้าที่นำดินและน้ำเสียจากภายนอกเข้ามา','วัตถุดิบธัญพืชที่ปนเปื้อน'],
+    ans:2, ex:'C. perfringens พบมากในดินและน้ำเสีย ซึ่งติดมากับรองเท้าที่ใช้งานภายนอกโรงงาน จึงต้องเปลี่ยนรองเท้าก่อนเข้าพื้นที่การผลิตทุกครั้ง'
+  },
+  {
+    tag:'S. aureus', tc:'b-sta',
+    q:'หากพนักงานมีบาดแผลที่มือและยังคงทำงานโดยไม่แจ้งหัวหน้า มีความเสี่ยงหลักจากเชื้อใด?',
+    opts:['Salmonella spp. เพราะพบในเนื้อสัตว์ดิบ','Staphylococcus aureus เพราะพบในบาดแผลและหนอง','Bacillus cereus เพราะสร้างสปอร์ทนร้อน','Clostridium perfringens เพราะเป็น Anaerobe'],
+    ans:1, ex:'S. aureus พบตามธรรมชาติในบาดแผลและหนองของคน ผลกระทบต่อผลิตภัณฑ์คือ Toxin ที่สร้างแล้วทนความร้อนสูง แม้ฆ่าเชื้อได้ Toxin ยังคงอยู่'
+  },
+  {
+    tag:'มาตรการป้องกัน', tc:'',
+    q:'มาตรการ "2 ก่อน 2 หลัง" ของสยาม โทเซลโล หมายถึงการล้างมือในสถานการณ์ใดบ้าง?',
+    opts:[
+      'ก่อน: เข้าโรงงาน / สวม PPE — หลัง: ถอด PPE / กลับบ้าน',
+      'ก่อน: เข้าพื้นที่ผลิต / รับประทานอาหาร — หลัง: เข้าห้องน้ำ / สัมผัสสิ่งสกปรก',
+      'ก่อน: เข้าห้องน้ำ / สัมผัสของเสีย — หลัง: ออกจากโรงงาน / พักกลางวัน',
+      'ก่อน: เริ่มกะ / รับอุปกรณ์ — หลัง: ส่งงาน / สิ้นสุดกะ'
+    ],
+    ans:1, ex:'2 ก่อน ได้แก่ ก่อนเข้าพื้นที่การผลิต และก่อนรับประทานอาหาร — 2 หลัง ได้แก่ หลังเข้าห้องน้ำ และหลังสัมผัสสิ่งสกปรก ล้างด้วยสบู่เหลว → เช็ดมือ → เจลแอลกอฮอล์'
+  },
+  {
+    tag:'Salmonella', tc:'b-sal',
+    q:'Salmonella spp. มักปนเปื้อนสู่บรรจุภัณฑ์อาหารผ่านทางใด และมาตรการป้องกันที่สำคัญที่สุดของพนักงานคืออะไร?',
+    opts:[
+      'ปนเปื้อนจากอากาศในโรงงาน — ป้องกันด้วยการเปิด Air Filter ตลอดเวลา',
+      'ปนเปื้อนจากมือและสิ่งแวดล้อมที่ไม่สะอาด — ป้องกันด้วยการล้างมือตามขั้นตอน 2 ก่อน 2 หลัง และสวม PPE ครบ',
+      'ปนเปื้อนจากเครื่องจักรที่ไม่ได้ทำความสะอาด — ป้องกันด้วยการรายงาน QA ทันที',
+      'ปนเปื้อนจากวัตถุดิบพลาสติกที่นำเข้า — ป้องกันด้วยการตรวจ Supplier เท่านั้น'
+    ],
+    ans:1, ex:'Salmonella พบในสิ่งแวดล้อม ดิน และสัตว์ สามารถติดมากับมือพนักงานหรือสิ่งของที่ไม่สะอาด การล้างมือ 2 ก่อน 2 หลัง และสวม PPE ครบจึงเป็นมาตรการสำคัญที่สุดที่พนักงานทำได้ทันที'
+  }
+];
+
+let userAnswers = new Array(Q.length).fill(null);
+let answered = 0;
+
+function init() {
+  updateBanner();
+  populateDepts();
+  renderQ();
+  document.getElementById('sheetUrl').value = sheetUrl;
+}
+
+function updateBanner() {
+  const b = document.getElementById('sheetsBanner');
+  const t = document.getElementById('bannerText');
+  if (sheetUrl) {
+    b.className='sheets-banner connected';
+    t.textContent='✅ เชื่อมต่อ Google Sheets แล้ว — ผลจะถูกบันทึกอัตโนมัติ';
+  } else {
+    b.className='sheets-banner';
+    t.textContent='ยังไม่ได้เชื่อมต่อ Google Sheets — ผลแบบทดสอบจะไม่ถูกบันทึก';
+  }
+}
+
+function populateDepts() {
+  const sel = document.getElementById('inputDept');
+  sel.innerHTML='<option value="">-- เลือกแผนก --</option>';
+  depts.filter(d=>d.trim()).forEach(d=>{
+    const o=document.createElement('option');
+    o.value=d.trim();o.textContent=d.trim();sel.appendChild(o);
+  });
+}
+
+function renderQ() {
+  const area = document.getElementById('questionsArea');
+  const L = ['ก','ข','ค','ง'];
+  area.innerHTML = Q.map((q,qi)=>`
+    <div class="q-block" id="qb-${qi}">
+      <div class="q-meta">
+        <span style="font-size:12px;color:var(--sub);font-weight:500">ข้อ ${qi+1}</span>
+        ${q.tc ? `<span class="badge ${q.tc}" style="font-size:10px">${q.tag}</span>` : `<span style="background:#f1f0e8;color:#5f5e5a;font-size:10px;font-weight:500;padding:2px 8px;border-radius:10px">${q.tag}</span>`}
+      </div>
+      <div class="q-text">${q.q}</div>
+      <div class="q-opts">
+        ${q.opts.map((opt,oi)=>`
+          <div class="q-opt" id="opt-${qi}-${oi}" onclick="pick(${qi},${oi})">
+            <span class="opt-letter">${L[oi]}</span>${opt}
+          </div>`).join('')}
+      </div>
+      <div class="q-fb" id="fb-${qi}"></div>
+    </div>
+  `).join('');
+}
+
+function pick(qi,oi) {
+  if (userAnswers[qi]!==null) return;
+  userAnswers[qi]=oi;
+  answered++;
+  // แสดงแค่ว่าเลือกข้อไหน (highlight สีเทา) ยังไม่เฉลย
+  document.querySelectorAll(`#qb-${qi} .q-opt`).forEach((el,idx)=>{
+    el.setAttribute('data-done','1');
+    if(idx===oi) el.style.background='var(--teal-l)';
+    if(idx===oi) el.style.borderColor='#9FE1CB';
+  });
+  const pct=Math.round(answered/Q.length*100);
+  document.getElementById('progText').textContent=`ตอบแล้ว ${answered} / ${Q.length} ข้อ`;
+  document.getElementById('progFill').style.width=pct+'%';
+  document.getElementById('progPct').textContent=pct+'%';
+  if(answered===Q.length) document.getElementById('submitBtn').disabled=false;
+}
+
+function showAllAnswers() {
+  // เฉลยทุกข้อหลัง submit
+  Q.forEach((q,qi)=>{
+    const chosen = userAnswers[qi];
+    document.querySelectorAll(`#qb-${qi} .q-opt`).forEach((el,idx)=>{
+      el.style.background='';
+      el.style.borderColor='';
+      if(idx===q.ans) el.classList.add(chosen===q.ans?'correct':'reveal');
+      if(idx===chosen&&chosen!==q.ans) el.classList.add('wrong');
+    });
+    const fb=document.getElementById(`fb-${qi}`);
+    fb.className=`q-fb show ${chosen===q.ans?'ok':'err'}`;
+    fb.innerHTML=(chosen===q.ans?'✅ ถูกต้อง! ':'❌ ไม่ถูกต้อง — ')+q.ex;
+  });
+}
+
+function submitQuiz() {
+  const name=document.getElementById('inputName').value.trim();
+  const dept=document.getElementById('inputDept').value;
+  const emp=document.getElementById('inputEmp').value.trim();
+  if(!name||!dept||!emp){alert('กรุณากรอกข้อมูลให้ครบ');return;}
+  const score=userAnswers.reduce((s,a,i)=>s+(a===Q[i].ans?1:0),0);
+  const total=Q.length;
+  const pct=Math.round(score/total*100);
+  const pass=pct>=80;
+
+  document.getElementById('resultScore').textContent=score;
+  document.getElementById('resultPct').textContent=`${score} / ${total} ข้อ · ${pct}%`;
+  const badge=document.getElementById('resultBadge');
+  badge.textContent=pass?'✅ ผ่านการทดสอบ (≥80%)':'❌ ไม่ผ่าน — กรุณาศึกษาเนื้อหาเพิ่มเติม';
+  badge.className='r-badge '+(pass?'pass':'fail');
+
+  const now=new Date();
+  // Format: YYYY/MM/DD HH:MM:SS ให้เหมือน EP.3
+  const pad=n=>String(n).padStart(2,'0');
+  const datetime=`${now.getFullYear()}/${pad(now.getMonth()+1)}/${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+
+  document.getElementById('resultDetails').innerHTML=
+    `<strong>ชื่อ:</strong> ${name}<br><strong>แผนก:</strong> ${dept}<br><strong>รหัส:</strong> ${emp}<br>`+
+    `<strong>วันที่:</strong> ${now.toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'})}<br>`+
+    `<strong>เวลา:</strong> ${now.toLocaleTimeString('th-TH')}`;
+  // เฉลยทุกข้อก่อนแสดงผล
+  showAllAnswers();
+
+  document.getElementById('quizFormCard').style.display='none';
+  document.getElementById('resultCard').className='result-card show';
+
+  if(sheetUrl){
+    document.getElementById('savingMsg').textContent='⏳ กำลังบันทึก...';
+    const L=['A','B','C','D'];
+    // สร้าง payload ตรงกับโครงสร้าง EP.3:
+    // วันที่-เวลา | ชื่อ | แผนก | รหัส | คะแนน | คะแนนเต็ม | % | pass | ข้อ1 | ข้อ1✓ | ... ข้อ5 | ข้อ5✓
+    const payload={
+      datetime,
+      name,
+      dept,
+      empCode: emp,
+      score,
+      total,
+      percent: pct+'%',
+      pass: pass ? 'YES' : 'NO'
+    };
+    userAnswers.forEach((a,i)=>{
+      const letter = a!==null ? L[a] : '-';
+      const correct = a===Q[i].ans ? 'ถูก' : 'ผิด';
+      payload[`ans${i+1}`] = letter;
+      payload[`ans${i+1}check`] = correct;
+    });
+    fetch(sheetUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+      .then(()=>{document.getElementById('savingMsg').textContent='✅ บันทึกผลลง Google Sheets แล้ว'})
+      .catch(()=>{document.getElementById('savingMsg').textContent='⚠ บันทึกไม่สำเร็จ'});
+  }
+}
+
+function retryQuiz() {
+  userAnswers=new Array(Q.length).fill(null);
+  answered=0;
+  ['inputName','inputEmp'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('inputDept').value='';
+  document.getElementById('progText').textContent='ตอบแล้ว 0 / 5 ข้อ';  document.getElementById('progFill').style.width='0%';
+  document.getElementById('progPct').textContent='0%';
+  document.getElementById('submitBtn').disabled=true;
+  document.getElementById('quizFormCard').style.display='block';
+  document.getElementById('resultCard').className='result-card';
+  renderQ();
+}
+
+function switchTab(id,btn) {
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function toggleSettings() {
+  const p=document.getElementById('settingsPanel');
+  p.classList.toggle('open');
+  if(p.classList.contains('open')){
+    document.getElementById('sheetUrl').value=sheetUrl;
+    document.getElementById('deptList').value=depts.join('\n');
+  }
+}
+
+function saveSettings() {
+  sheetUrl=document.getElementById('sheetUrl').value.trim();
+  depts=document.getElementById('deptList').value.split('\n');
+  localStorage.setItem('ep4_sheetUrl',sheetUrl);
+  localStorage.setItem('ep4_depts',depts.join('\n'));
+  updateBanner();
+  populateDepts();
+  document.getElementById('settingsPanel').classList.remove('open');
+}
+
+init();
+</script>
+</body>
+</html>
