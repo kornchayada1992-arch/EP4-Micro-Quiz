@@ -754,6 +754,7 @@ function doGet() {
 
     <div class="result-card" id="resultCard">
       <div style="font-size:13px;color:var(--sub);margin-bottom:4px">ผลการทดสอบ QA Sharing EP.4</div>
+      <div style="font-size:56px;margin:8px 0" id="resultIcon">—</div>
       <div class="r-score" id="resultScore">0</div>
       <div class="r-pct" id="resultPct">0 / 5 ข้อ · 0%</div>
       <div class="r-badge" id="resultBadge">—</div>
@@ -913,12 +914,25 @@ function submitQuiz() {
   const score=userAnswers.reduce((s,a,i)=>s+(a===Q[i].ans?1:0),0);
   const total=Q.length;
   const pct=Math.round(score/total*100);
-  const pass=pct>=80;
+  const pass=pct>=100;
 
+  // icon + ข้อความตามช่วงคะแนน
+  let resultIcon, resultMsg;
+  if(pct===100){
+    resultIcon='🏆'; resultMsg='สุดยอด! ผ่านการทดสอบ';
+  } else if(pct>=80){
+    resultIcon='👍'; resultMsg='เกือบแล้ว! พยายามอีกนิด';
+  } else if(pct>=60){
+    resultIcon='💪'; resultMsg='ไม่เป็นไร ลองศึกษาเพิ่มแล้วทำใหม่';
+  } else {
+    resultIcon='📖'; resultMsg='กลับไปอ่านเนื้อหาแล้วลองใหม่นะคะ';
+  }
+
+  document.getElementById('resultIcon').textContent=resultIcon;
   document.getElementById('resultScore').textContent=score;
   document.getElementById('resultPct').textContent=`${score} / ${total} ข้อ · ${pct}%`;
   const badge=document.getElementById('resultBadge');
-  badge.textContent=pass?'✅ ผ่านการทดสอบ (≥80%)':'❌ ไม่ผ่าน — กรุณาศึกษาเนื้อหาเพิ่มเติม';
+  badge.textContent=pass?'✅ ผ่านการทดสอบ (100%)':'❌ ไม่ผ่าน — '+resultMsg;
   badge.className='r-badge '+(pass?'pass':'fail');
 
   const now=new Date();
