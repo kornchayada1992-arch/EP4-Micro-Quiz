@@ -779,19 +779,8 @@ function doGet() {
 <script>
 // ===== CONFIG =====
 let sheetUrl = localStorage.getItem('ep4_sheetUrl') || 'https://script.google.com/macros/s/AKfycbweBayd4U-bl6tbVUjcJyr1UhHvxlpd0JWAX932uhghQtlSQmuHRVDSglxCF95Vdf0/exec';
-
-// ✅ แผนกถูก hardcode ไว้โดยตรง — มือถือและคอมพิวเตอร์แสดงเหมือนกันทุกเครื่อง
-const DEFAULT_DEPTS = [
-  'ฝ่ายผลิต',
-  'ฝ่าย QA / QC',
-  'ฝ่ายคลังสินค้า',
-  'ฝ่ายวิศวกรรม',
-  'ฝ่าย HR / ธุรการ',
-  'ฝ่ายจัดซื้อ'
-];
-let depts = localStorage.getItem('ep4_depts')
-  ? localStorage.getItem('ep4_depts').split('\n')
-  : DEFAULT_DEPTS;
+const DEFAULT_DEPTS = ['PRS','QCS','MTS','SCM','QAS','ACC','HRG','MKT','BD'];
+let depts = localStorage.getItem('ep4_depts') ? localStorage.getItem('ep4_depts').split('\n') : DEFAULT_DEPTS;
 
 // ===== QUESTIONS (5 ข้อ — เฉลยหลังกดส่ง) =====
 const Q = [
