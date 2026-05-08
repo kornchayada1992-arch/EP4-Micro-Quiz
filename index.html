@@ -778,7 +778,7 @@ function doGet() {
 
 <script>
 // ===== CONFIG =====
-let sheetUrl = localStorage.getItem('ep4_sheetUrl')||'';
+let sheetUrl = localStorage.getItem('ep4_sheetUrl') || 'https://script.google.com/macros/s/AKfycbweBayd4U-bl6tbVUjcJyr1UhHvxlpd0JWAX932uhghQtlSQmuHRVDSglxCF95Vdf0/exec';
 let depts = (localStorage.getItem('ep4_depts')||'ฝ่ายผลิต\nฝ่าย QA / QC\nฝ่ายคลังสินค้า\nฝ่ายวิศวกรรม\nฝ่าย HR / ธุรการ\nฝ่ายจัดซื้อ').split('\n');
 
 // ===== QUESTIONS (5 ข้อ — เฉลยหลังกดส่ง) =====
@@ -923,7 +923,7 @@ function submitQuiz() {
   // icon + ข้อความตามช่วงคะแนน
   let resultIcon, resultMsg;
   if(pct===100){
-    resultIcon='🏆'; resultMsg='สุดยอด! ผ่านการทดสอบ';
+    resultIcon='🏆'; resultMsg='สมบูรณ์แบบ! เข้าใจเนื้อหาอย่างดีเยี่ยม 👏';
   } else if(pct>=80){
     resultIcon='👍'; resultMsg='เกือบแล้ว! พยายามอีกนิด';
   } else if(pct>=60){
