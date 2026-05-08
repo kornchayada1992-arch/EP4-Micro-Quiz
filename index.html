@@ -878,31 +878,52 @@ function renderQ() {
 }
 
 function pick(qi,oi) {
-  if (userAnswers[qi]!==null) return;
+  // ถ้ากดส่งไปแล้วไม่ให้เปลี่ยน
+  if (document.getElementById('submitBtn').disabled===false && userAnswers[qi]!==null && answered===Q.length) return;
+
+  // ถ้าเคยเลือกแล้ว ให้ reset ก่อน (เปลี่ยนคำตอบได้)
+  const prevAns = userAnswers[qi];
+  if(prevAns !== null) {
+    // ยกเลิกการเลือกเดิม
+    const prevEl = document.getElementById(`opt-${qi}-${prevAns}`);
+    if(prevEl){ prevEl.style.background=''; prevEl.style.borderColor=''; }
+    answered--;
+  }
+
   userAnswers[qi]=oi;
   answered++;
-  // แสดงแค่ว่าเลือกข้อไหน (highlight สีเทา) ยังไม่เฉลย
-  document.querySelectorAll(`#qb-${qi} .q-opt`).forEach((el,idx)=>{
-    el.setAttribute('data-done','1');
-    if(idx===oi) el.style.background='var(--teal-l)';
-    if(idx===oi) el.style.borderColor='#9FE1CB';
+
+  // reset สีทุกตัวเลือกในข้อนี้ก่อน
+  document.querySelectorAll(`#qb-${qi} .q-opt`).forEach(el=>{
+    el.style.background='';
+    el.style.borderColor='';
   });
+
+  // highlight ตัวที่เลือก
+  const selEl = document.getElementById(`opt-${qi}-${oi}`);
+  if(selEl){
+    selEl.style.background='var(--pink-l)';
+    selEl.style.borderColor='var(--pink)';
+  }
+
   const pct=Math.round(answered/Q.length*100);
-  document.getElementById('progText').textContent=`ตอบแล้ว ${answered} / ${Q.length} ข้อ`;
-  document.getElementById('progFill').style.width=pct+'%';
-  document.getElementById('progPct').textContent=pct+'%';
-  if(answered===Q.length) document.getElementById('submitBtn').disabled=false;
+  document.getElementById('progText').textContent=`ตอบแล้ว ${Math.min(answered,Q.length)} / ${Q.length} ข้อ`;
+  document.getElementById('progFill').style.width=Math.min(pct,100)+'%';
+  document.getElementById('progPct').textContent=Math.min(pct,100)+'%';
+  // เปิดปุ่มส่งเมื่อตอบครบทุกข้อ
+  const allAnswered = userAnswers.every(a => a !== null);
+  document.getElementById('submitBtn').disabled = !allAnswered;
 }
 
 function showAllAnswers() {
-  // เฉลยทุกข้อหลัง submit
   Q.forEach((q,qi)=>{
     const chosen = userAnswers[qi];
     document.querySelectorAll(`#qb-${qi} .q-opt`).forEach((el,idx)=>{
       el.style.background='';
       el.style.borderColor='';
+      el.onclick=null; // ปิดการคลิกหลัง submit
       if(idx===q.ans) el.classList.add(chosen===q.ans?'correct':'reveal');
-      if(idx===chosen&&chosen!==q.ans) el.classList.add('wrong');
+      if(idx===chosen && chosen!==q.ans) el.classList.add('wrong');
     });
     const fb=document.getElementById(`fb-${qi}`);
     fb.className=`q-fb show ${chosen===q.ans?'ok':'err'}`;
@@ -949,36 +970,42 @@ function submitQuiz() {
     `<strong>ชื่อ:</strong> ${name}<br><strong>แผนก:</strong> ${dept}<br><strong>รหัส:</strong> ${emp}<br>`+
     `<strong>วันที่:</strong> ${now.toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'})}<br>`+
     `<strong>เวลา:</strong> ${now.toLocaleTimeString('th-TH')}`;
-  // เฉลยทุกข้อก่อนแสดงผล
+  // เฉลยทุกข้อก่อน
   showAllAnswers();
+  // scroll ขึ้นไปดูเฉลย
+  document.getElementById('quizFormCard').scrollIntoView({behavior:'smooth'});
 
-  document.getElementById('quizFormCard').style.display='none';
-  document.getElementById('resultCard').className='result-card show';
+  // รอ 2 วินาทีแล้วค่อยแสดงหน้าผล
+  setTimeout(()=>{
+    document.getElementById('quizFormCard').style.display='none';
+    document.getElementById('resultCard').className='result-card show';
+    document.getElementById('resultCard').scrollIntoView({behavior:'smooth'});
+  }, 2500);
 
+  // ส่งข้อมูลไป Sheets ทันทีในพื้นหลัง ไม่รอ
   if(sheetUrl){
     document.getElementById('savingMsg').textContent='⏳ กำลังบันทึก...';
     const L=['A','B','C','D'];
-    // สร้าง payload ตรงกับโครงสร้าง EP.3:
-    // วันที่-เวลา | ชื่อ | แผนก | รหัส | คะแนน | คะแนนเต็ม | % | pass | ข้อ1 | ข้อ1✓ | ... ข้อ5 | ข้อ5✓
     const payload={
-      datetime,
-      name,
-      dept,
-      empCode: emp,
-      score,
-      total,
-      percent: pct+'%',
-      pass: pass ? 'YES' : 'NO'
+      datetime, name, dept, empCode:emp,
+      score, total, percent:pct+'%',
+      pass:pass?'YES':'NO'
     };
     userAnswers.forEach((a,i)=>{
-      const letter = a!==null ? L[a] : '-';
-      const correct = a===Q[i].ans ? 'ถูก' : 'ผิด';
-      payload[`ans${i+1}`] = letter;
-      payload[`ans${i+1}check`] = correct;
+      payload[`ans${i+1}`] = a!==null ? L[a] : '-';
+      payload[`ans${i+1}check`] = a===Q[i].ans ? 'ถูก' : 'ผิด';
     });
-    fetch(sheetUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
-      .then(()=>{document.getElementById('savingMsg').innerHTML='<div class="r-save-ok">✅ บันทึกผลเรียบร้อยแล้ว</div>'})
-      .catch(()=>{document.getElementById('savingMsg').textContent='⚠ บันทึกไม่สำเร็จ'});
+    // ส่งแบบ fire-and-forget ไม่รอ response
+    fetch(sheetUrl,{
+      method:'POST',
+      mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    }).then(()=>{
+      document.getElementById('savingMsg').innerHTML='<div class="r-save-ok">✅ บันทึกผลเรียบร้อยแล้ว</div>';
+    }).catch(()=>{
+      document.getElementById('savingMsg').textContent='⚠ บันทึกไม่สำเร็จ';
+    });
   }
 }
 
